@@ -3,7 +3,11 @@
 [환경아카이브 풀숲](https://ecoarchive.org/)의 실제 소장 사진으로 만든 실시간 멀티플레이어 기억력 게임.
 관람객이 각자 휴대폰으로 접속해 **함께 사진을 들여다보고, 가려진 뒤 기억으로 맞히는** 전시장용 게임입니다.
 
-**🔗 지금 해보기 → https://eco-game-1234.web.app**
+**🔗 지금 해보기**
+- https://eco-game-1234.web.app (Firebase Hosting)
+- https://hskim-koreashe.github.io/eco-boardgame/ (GitHub Pages)
+
+같은 Firebase 프로젝트를 쓰기 때문에 방 코드는 두 주소 중 어느 쪽에서 만들어도 서로 통합니다.
 
 ![학습 화면](docs/screenshots/study.png)
 
@@ -55,5 +59,9 @@ cd public && python3 -m http.server 8080
 ## 배포
 
 ```bash
+# Firebase Hosting
 npx firebase-tools deploy --project <프로젝트ID>
+
+# GitHub Pages (public/ 폴더를 gh-pages 브랜치 루트로 올림)
+git subtree push --prefix=public origin gh-pages
 ```
