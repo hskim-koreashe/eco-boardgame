@@ -1,0 +1,50 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>풀숲 큐레이터</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head><body>
+<div class="top"><a href="index.html">‹ 나가기</a><h1>🌱 풀숲 큐레이터</h1><span class="code" id="roomcode"></span></div>
+<div class="wrap">
+
+<section id="lobby">
+  <h2>대기실</h2>
+  <p class="note">같은 방 코드를 입력하면 참가할 수 있습니다.</p>
+  <div class="players" id="lobbyPlayers"></div>
+  <button class="btn big" id="startBtn" hidden>게임 시작</button>
+  <p class="note" id="lobbyHint"></p>
+</section>
+
+<section id="study" hidden>
+  <h2>👀 지금부터 <span id="studySec">90</span>초, 사진을 잘 봐두세요</h2>
+  <p class="note">퀴즈는 아래 8장 안에서만 나옵니다. 사진·연도·이야기를 함께 읽어보세요.</p>
+  <div class="timerbar" id="studyBar"><i style="width:100%"></i></div>
+  <div class="studygrid" id="studyGrid"></div>
+</section>
+
+<section id="quiz" hidden>
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <h2>기억 퀴즈 <span id="qNo"></span> / 8</h2>
+    <span class="timenum" id="qTimer"></span>
+  </div>
+  <div class="timerbar" id="quizBar"><i style="width:100%"></i></div>
+  <div class="players" id="players2"></div>
+  <div class="qcard" id="qcard"></div>
+</section>
+
+<section id="finished" hidden>
+  <h2>오늘의 기억력 결과 🎉</h2>
+  <div class="results" id="leaderboard"></div>
+  <div class="divider">오늘 함께 본 기록</div>
+  <div class="exhibit" id="studied"></div>
+  <p class="note">사진을 누르면 풀숲 원문 소장자료로 이동합니다.</p>
+</section>
+
+</div>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/firebase-init.js"></script>
+<script src="js/game.js"></script>
+</body></html>

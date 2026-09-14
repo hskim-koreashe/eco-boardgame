@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 전시장 키오스크용 공개 게임. 개인정보·결제 없음 — 익명 로그인 사용자면 누구나
+    // 방을 만들고 참가할 수 있게 열어 둔다. 턴 순서·카드 중복 방지 같은 실제 규칙은
+    // 클라이언트의 Firestore 트랜잭션(game.js)이 강제한다.
+    match /rooms/{roomCode} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+        && request.resource.data.hostUid == request.auth.uid
+        && request.resource.data.status == 'lobby';
+      allow update: if request.auth != null
+        && resource.data.status in ['lobby', 'study', 'quiz'];
+      allow delete: if false;
+    }
+  }
+}

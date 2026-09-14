@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700&display=swap">
+<style>
+  body{margin:0;background:#FBF6EC;font-family:'Nunito',system-ui,sans-serif;color:#3A3226;}
+  a{color:#B5502B}a:hover{color:#8f3f21}
+  .hl{font-family:'Baloo 2',system-ui,sans-serif;}
+  .pill{display:inline-flex;align-items:center;padding:3px 12px;border-radius:999px;font-size:12px;font-weight:700;}
+  .cardshadow{box-shadow:0 8px 18px -8px rgba(58,50,38,.35);}
+</style>
+</helmet>
+
+<div style="width:1400px;height:1000px;padding:56px 60px;box-sizing:border-box;display:flex;flex-direction:column;gap:26px;">
+
+  <div style="display:flex;flex-direction:column;gap:4px;">
+    <div class="pill" style="background:#A9C9A4;color:#2F4A2C;width:fit-content;">방향 A · 부드러운 들판</div>
+    <div class="hl" style="font-size:34px;font-weight:800;color:#2F4A2C;">따뜻한 기록 마을</div>
+    <div style="font-size:15px;color:#6b6154;max-width:640px;">둥근 형태와 파스텔 톤의 일러스트로 감싼 큐레이터 게임. 무거운 환경 기록을 아이부터 어른까지 편하게 만지도록 눅여낸다.</div>
+  </div>
+
+  <div style="display:flex;gap:40px;align-items:flex-start;flex:1;">
+
+    <!-- box mockup -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="cardshadow" style="width:340px;height:230px;border-radius:20px;background:linear-gradient(180deg,#AFD3E2 0%,#AFD3E2 58%,#DCE8D5 58%,#DCE8D5 100%);position:relative;overflow:hidden;border:3px solid #fff;">
+        <svg width="340" height="230" style="position:absolute;left:0;top:0;">
+          <circle cx="278" cy="46" r="26" fill="#F5D67B"/>
+          <path d="M0,150 Q70,110 150,140 T340,130 V230 H0 Z" fill="#A9C9A4"/>
+          <path d="M0,178 Q90,150 190,172 T340,165 V230 H0 Z" fill="#8FB98A"/>
+          <circle cx="60" cy="150" r="18" fill="#6FA36A"/>
+          <circle cx="82" cy="140" r="24" fill="#6FA36A"/>
+          <circle cx="255" cy="158" r="16" fill="#6FA36A"/>
+          <rect x="150" y="115" width="26" height="20" rx="3" fill="#E9A6A6" stroke="#3A3226" stroke-width="1.5"/>
+          <polygon points="146,115 163,100 180,115" fill="#B5502B" stroke="#3A3226" stroke-width="1.5"/>
+        </svg>
+        <div style="position:absolute;left:20px;bottom:18px;">
+          <div class="hl" style="font-size:26px;font-weight:800;color:#2F4A2C;text-shadow:0 2px 0 #fff;">풀숲 큐레이터</div>
+          <div style="font-size:12px;font-weight:700;color:#3A3226;background:#fff;display:inline-block;padding:2px 10px;border-radius:8px;margin-top:4px;">환경아카이브 보드게임 · 3~6인</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#a39a8b;">박스 표지</div>
+
+      <!-- tokens -->
+      <div class="cardshadow" style="width:340px;border-radius:16px;background:#fff;padding:16px;display:flex;gap:10px;flex-wrap:wrap;">
+        <sc-for list="{{tokens}}" as="t" hint-placeholder-count="5">
+          <div style="width:44px;height:44px;border-radius:50%;background:{{t.bg}};display:flex;align-items:center;justify-content:center;border:2px solid #fff;box-shadow:0 3px 6px rgba(0,0,0,.12);">
+            <span style="font-size:18px;">{{t.icon}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="font-size:12px;color:#a39a8b;">주제 토큰 (생태계보전 · 반핵탈핵 · 반공해 · 기후에너지 · 생활안전)</div>
+
+      <div class="cardshadow" style="width:340px;border-radius:16px;background:#fff;padding:16px 18px;">
+        <div class="hl" style="font-size:14px;font-weight:800;color:#2F4A2C;margin-bottom:8px;">🏆 어떻게 이기나요?</div>
+        <div style="font-size:12.5px;line-height:1.7;color:#3A3226;">
+          <b>목표</b> — 6라운드 동안 진열대에서 카드를 1장씩 가져가 6장의 "전시"를 완성한다.<br>
+          <b>점수 3가지</b><br>
+          🌿 같은 주제 묶음 — 2장 1점 · 3장 3점 · 4장 6점 · 5장+ 10점<br>
+          🕰️ 서로 다른 연대 — 1개당 2점 (묶기 vs 펼치기, 서로 당김)<br>
+          📚 기록 건수 합 ÷100 — 최대 10점<br>
+          <b>승자</b> — 세 점수 합이 가장 높은 사람. 동점이면 기록 건수가 많은 쪽.
+        </div>
+      </div>
+    </div>
+
+    <!-- board + cards -->
+    <div style="display:flex;flex-direction:column;gap:18px;flex:1;">
+      <div class="cardshadow" style="border-radius:20px;background:#fff;padding:18px;">
+        <svg viewBox="0 0 900 220" width="100%" height="220">
+          <path d="M30,190 C 150,60 260,60 340,120 S 520,190 600,120 S 780,50 870,90" fill="none" stroke="#DCE8D5" stroke-width="34" stroke-linecap="round"/>
+          <path d="M30,190 C 150,60 260,60 340,120 S 520,190 600,120 S 780,50 870,90" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="1 16" stroke-linecap="round"/>
+          <sc-for list="{{stops}}" as="s" hint-placeholder-count="6">
+            <g>
+              <circle cx="{{s.x}}" cy="{{s.y}}" r="20" fill="{{s.fill}}" stroke="#3A3226" stroke-width="2"/>
+              <text x="{{s.x}}" y="{{s.y}}" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="800" fill="#3A3226" font-family="Nunito">{{s.label}}</text>
+            </g>
+          </sc-for>
+          <circle cx="600" cy="120" r="13" fill="#F5D67B" stroke="#3A3226" stroke-width="2"/>
+          <circle cx="340" cy="120" r="13" fill="#E9A6A6" stroke="#3A3226" stroke-width="2"/>
+        </svg>
+      </div>
+      <div style="font-size:12px;color:#a39a8b;margin-top:-10px;">진열대 · 손패 놓는 판 (말은 실제 카드 위에 올린다)</div>
+
+      <div style="display:flex;gap:16px;">
+        <sc-for list="{{cards}}" as="c" hint-placeholder-count="3">
+          <div class="cardshadow" style="width:190px;border-radius:16px;background:#fff;overflow:hidden;border:3px solid #fff;">
+            <img src="{{c.img}}" style="width:100%;height:110px;object-fit:cover;display:block;">
+            <div style="padding:10px 12px;">
+              <span class="pill" style="background:#F5D67B;color:#5a4413;font-size:11px;padding:2px 9px;">{{c.year}}</span>
+              <div class="hl" style="font-size:15px;font-weight:700;margin-top:6px;line-height:1.25;">{{c.title}}</div>
+              <div class="pill" style="background:{{c.tagBg}};color:{{c.tagFg}};font-size:10px;margin-top:8px;">{{c.subject}}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="font-size:12px;color:#a39a8b;margin-top:-10px;">사건 카드 · 실제 소장자료 사진 사용</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      tokens: [
+        {bg:'#A9C9A4', icon:'🌿'},
+        {bg:'#AFD3E2', icon:'☢️'},
+        {bg:'#E9A6A6', icon:'🏭'},
+        {bg:'#F5D67B', icon:'🔥'},
+        {bg:'#CBB7D8', icon:'🛡️'},
+      ],
+      stops: [
+        {x:30,y:190,fill:'#A9C9A4',label:'82'},
+        {x:170,y:95,fill:'#fff',label:'93'},
+        {x:340,y:120,fill:'#E9A6A6',label:'00'},
+        {x:520,y:170,fill:'#fff',label:'08'},
+        {x:600,y:120,fill:'#F5D67B',label:'17'},
+        {x:870,y:90,fill:'#AFD3E2',label:'25'},
+      ],
+      cards: [
+        {img:'ev_1134.jpg', year:1978, title:'온산병 사태', subject:'반공해', tagBg:'#E9A6A6', tagFg:'#7a2f2f'},
+        {img:'ev_1149.jpg', year:2000, title:'천성산 터널공사 반대', subject:'생태계보전', tagBg:'#A9C9A4', tagFg:'#2F4A2C'},
+        {img:'ev_1170.jpg', year:2017, title:'신고리 5,6호기 건설 반대', subject:'반핵탈핵', tagBg:'#AFD3E2', tagFg:'#1d4b63'},
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

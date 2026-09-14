@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gowun+Dodum&display=swap">
+<style>
+  body{margin:0;background:#F3ECD8;font-family:'Gowun Dodum',system-ui,sans-serif;color:#233625;}
+  a{color:#B5502B}a:hover{color:#8f3f21}
+  .hl{font-family:'Do Hyeon',system-ui,sans-serif;}
+</style>
+</helmet>
+
+<div style="width:1400px;height:1000px;padding:50px 56px;box-sizing:border-box;position:relative;background:
+  radial-gradient(circle at 90% 8%, rgba(75,90,58,.06), transparent 40%);">
+
+  <svg width="30" height="30" style="position:absolute;left:24px;top:24px;" viewBox="0 0 24 24" fill="none" stroke="#233625" stroke-width="1.6"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.5" y2="16"/><line x1="8.7" y1="8.5" x2="20" y2="20"/></svg>
+  <svg width="30" height="30" style="position:absolute;right:24px;top:24px;" viewBox="0 0 24 24" fill="none" stroke="#233625" stroke-width="1.6"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.5" y2="16"/><line x1="8.7" y1="8.5" x2="20" y2="20"/></svg>
+  <div style="position:absolute;left:60px;top:14px;font-size:11px;letter-spacing:.2em;color:#8a8168;">CUT HERE</div>
+  <div style="position:absolute;right:96px;top:14px;font-size:11px;letter-spacing:.2em;color:#8a8168;">CUT HERE</div>
+
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px;">
+    <div>
+      <div style="display:inline-block;background:#4B5A3A;color:#F3ECD8;font-size:12px;font-weight:700;padding:3px 12px;border-radius:3px;">방향 B · 기록의 지도</div>
+      <div class="hl" style="font-size:38px;color:#4B5A3A;margin-top:6px;">에코폴리: 기록의 지도</div>
+    </div>
+    <div style="font-size:13px;color:#8a8168;text-align:right;max-width:320px;">잘라서 만드는 인쇄물 보드. 오려서 벽에 붙이면<br>1982→2025 진행 상황판이 된다.</div>
+  </div>
+
+  <!-- mascot speech -->
+  <div style="position:absolute;left:60px;top:150px;display:flex;align-items:flex-end;gap:10px;">
+    <div style="background:#fff;border:2.5px solid #233625;border-radius:14px;padding:8px 14px;font-size:13px;font-weight:700;position:relative;">
+      기록을 따라가 볼까?
+      <div style="position:absolute;left:20px;bottom:-9px;width:0;height:0;border:9px solid transparent;border-top-color:#233625;border-bottom:0;"></div>
+    </div>
+    <svg width="54" height="60" viewBox="0 0 54 60">
+      <ellipse cx="27" cy="46" rx="17" ry="12" fill="#8FB463" stroke="#233625" stroke-width="2"/>
+      <circle cx="27" cy="22" r="19" fill="#A9CB7B" stroke="#233625" stroke-width="2"/>
+      <circle cx="20" cy="20" r="2.4" fill="#233625"/><circle cx="34" cy="20" r="2.4" fill="#233625"/>
+      <path d="M20,28 Q27,33 34,28" fill="none" stroke="#233625" stroke-width="2" stroke-linecap="round"/>
+      <path d="M27,3 C 20,-3 14,4 20,10 C 24,6 27,6 27,3 Z" fill="#4B5A3A"/>
+    </svg>
+  </div>
+
+  <!-- S path -->
+  <svg viewBox="0 0 1280 640" width="1280" height="640" style="margin-top:40px;">
+    <path d="M40,90 H520 A70,70 0 0 1 520,230 H180 A70,70 0 0 0 180,370 H760 A70,70 0 0 1 760,510 H1240"
+          fill="none" stroke="#233625" stroke-width="70" stroke-linecap="round"/>
+    <path d="M40,90 H520 A70,70 0 0 1 520,230 H180 A70,70 0 0 0 180,370 H760 A70,70 0 0 1 760,510 H1240"
+          fill="none" stroke="#F3ECD8" stroke-width="58" stroke-linecap="round"/>
+    <sc-for list="{{stops}}" as="s" hint-placeholder-count="10">
+      <g>
+        <rect x="{{s.x}}" y="{{s.y}}" width="86" height="86" rx="6" fill="{{s.fill}}" stroke="#233625" stroke-width="2.4" transform="translate(-43,-43)"/>
+        <text x="{{s.x}}" y="{{s.y_1}}" text-anchor="middle" class="hl" font-size="15" fill="#233625">{{s.n}}</text>
+        <text x="{{s.x}}" y="{{s.y_2}}" text-anchor="middle" font-size="10" font-weight="700" fill="#233625">{{s.label}}</text>
+      </g>
+    </sc-for>
+    <circle cx="1240" cy="510" r="46" fill="#E7B23A" stroke="#233625" stroke-width="3"/>
+    <text x="1240" y="504" text-anchor="middle" class="hl" font-size="13" fill="#233625">2025</text>
+    <text x="1240" y="522" text-anchor="middle" font-size="10" font-weight="700" fill="#233625">전시완성</text>
+  </svg>
+
+  <div style="display:flex;gap:22px;margin-top:6px;font-size:12px;font-weight:700;">
+    <div style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;background:#E9A6A6;display:inline-block;border:2px solid #233625;"></span>사건 카드 뽑기</div>
+    <div style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;background:#F3ECD8;display:inline-block;border:2px solid #233625;"></span>쉬어가기</div>
+    <div style="display:flex;align-items:center;gap:6px;"><span style="width:14px;height:14px;background:#E7B23A;display:inline-block;border:2px solid #233625;"></span>연대 마일스톤</div>
+  </div>
+
+  <div style="margin-top:14px;background:#fff;border:2.5px solid #233625;border-radius:14px;padding:12px 20px;display:flex;align-items:center;gap:26px;">
+    <div class="hl" style="font-size:15px;color:#4B5A3A;white-space:nowrap;">🏆 승리 조건</div>
+    <div style="font-size:12.5px;line-height:1.6;font-weight:600;">
+      말판을 돌며 뽑은 카드 6장의 전시를 완성 →
+      🌿 <b>같은 주제 묶음</b>(최대 10점) + 🕰️ <b>서로 다른 연대 수×2점</b> + 📚 <b>기록 건수 합÷100</b>(최대 10점) 합이 가장 높은 사람이 승리. 동점이면 기록 건수 많은 쪽.
+    </div>
+  </div>
+</div>
+</x-dc>
+<script data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const raw = [
+      {x:83,y:90,fill:'#E9A6A6',n:'1',label:'1982'},
+      {x:260,y:90,fill:'#F3ECD8',n:'2',label:'1988'},
+      {x:437,y:90,fill:'#E7B23A',n:'3',label:'1993'},
+      {x:520,y:230,fill:'#E9A6A6',n:'4',label:'1997'},
+      {x:343,y:230,fill:'#F3ECD8',n:'5',label:'2000'},
+      {x:180,y:300,fill:'#E9A6A6',n:'6',label:'2005'},
+      {x:180,y:370,fill:'#E7B23A',n:'7',label:'2008'},
+      {x:400,y:370,fill:'#F3ECD8',n:'8',label:'2011'},
+      {x:600,y:370,fill:'#E9A6A6',n:'9',label:'2017'},
+      {x:760,y:440,fill:'#F3ECD8',n:'10',label:'2019'},
+    ];
+    const stops = raw.map(s => ({...s, y_1: s.y - 6, y_2: s.y + 12}));
+    return { stops };
+  }
+}
+</script>
+</body>
+</html>
