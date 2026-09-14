@@ -1,15 +1,23 @@
-/* 방 하나(room.html)의 전체 로직: 대기실 → 학습(90초) → 기억 퀴즈(8문항×15초) → 결과 */
+/* 방 하나(room.html)의 전체 로직: 대기실 → 학습(45초) → 기억 퀴즈(8문항×10초, 전원 답하면 3초 뒤 바로 다음) → 결과 */
 
 const params = new URLSearchParams(location.search);
 const CODE = (params.get("code") || "").toUpperCase();
-const STUDY_MS = 90000;
-const Q_MS = 15000;
+const STUDY_MS = 45000;
+const Q_MS = 10000;
+const EARLY_ADVANCE_MS = 3000;
 const N_CARDS = 8;
 
 let CARDS = [];
 let CARDS_BY_ID = {};
 let ME = null;
 let advancing = false; // 방장이 전환 트랜잭션을 중복 호출하지 않게 막는 플래그
+let earlyScheduledFor = null; // 전원 답변 완료로 조기 전환을 예약한 quizIndex
+
+/** 긴 해설에서 첫 문장만 뽑아 카드 한 줄 요약으로 쓴다. */
+function oneLine(desc) {
+  const first = (desc || "").split(/(?<=[.!?])\s+/)[0] || "";
+  return first.length > 55 ? first.slice(0, 55) + "…" : first;
+}
 
 async function loadCards() {
   const r = await fetch("data/cards.json");
@@ -146,7 +154,7 @@ function renderStudy(room) {
   document.getElementById("studyGrid").innerHTML = room.studyCards.map(id => {
     const c = CARDS_BY_ID[id];
     return `<div class="scard"><img src="${c.image}" alt="">
-      <div class="b"><span class="yr">${c.year}</span><div class="ti">${esc(c.title)}</div><div class="de">${esc((c.desc || "").slice(0, 70))}${(c.desc || "").length > 70 ? "…" : ""}</div></div>
+      <div class="b"><span class="yr">${c.year}</span><div class="ti">${esc(c.title)}</div><div class="de">${esc(oneLine(c.desc))}</div></div>
     </div>`;
   }).join("");
 
@@ -195,8 +203,19 @@ function renderQuiz(room) {
       }
       return `<button class="${cls}" ${dis} onclick="answerQuiz(${i}).catch(e=>{})">${esc(o)}${q.type === "year" ? "년" : ""}</button>`;
     }).join("")}</div>
-    ${mine ? `<div class="msg ${mine.correct ? "ok" : "bad"}">${mine.correct ? "정답!" : "아쉽습니다."}</div>` : `<div class="waitchip"><span class="spin"></span> 15초 안에 골라 보세요</div>`}
+    ${mine ? `<div class="msg ${mine.correct ? "ok" : "bad"}">${mine.correct ? "정답!" : "아쉽습니다."}</div>` : `<div class="waitchip"><span class="spin"></span> ${Q_MS / 1000}초 안에 골라 보세요</div>`}
   `;
+
+  const answeredCount = room.baseOrder.filter(uid => room.players[uid]?.answers?.[String(room.quizIndex)] !== undefined).length;
+  if (ME.uid === room.hostUid && answeredCount === room.baseOrder.length && earlyScheduledFor !== room.quizIndex) {
+    earlyScheduledFor = room.quizIndex;
+    const atIndex = room.quizIndex;
+    setTimeout(async () => {
+      const snap = await roomRef().get();
+      const r = snap.data();
+      if (r.status === "quiz" && r.quizIndex === atIndex) advanceQuiz().catch(() => {});
+    }, EARLY_ADVANCE_MS);
+  }
 
   const tick = () => {
     if (document.getElementById("quiz").hidden) return;
