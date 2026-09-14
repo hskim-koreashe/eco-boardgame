@@ -1,8 +1,8 @@
-/* 방 하나(room.html)의 전체 로직: 대기실 → 학습(45초) → 정답 맞히기(8문항×10초) → 순서로 줄 세우기(35초) → 결과 */
+/* 방 하나(room.html)의 전체 로직: 대기실 → 학습(연도순 1장씩 5초) → 정답 맞히기(8문항×10초) → 순서로 줄 세우기(35초) → 결과 */
 
 const params = new URLSearchParams(location.search);
 const CODE = (params.get("code") || "").toUpperCase();
-const STUDY_MS = 45000;
+const STUDY_CARD_MS = 5000;
 const MC_MS = 10000;
 const ORDER_MS = 35000;
 const EARLY_ADVANCE_MS = 3000;
@@ -77,28 +77,31 @@ async function startGame() {
     const room = snap.data();
     if (room.status !== "lobby") return;
 
-    const studyCards = pick(CARDS.map(c => c.id), N_CARDS);
+    const studyCards = pick(CARDS.map(c => c.id), N_CARDS).sort((a, b) => CARDS_BY_ID[a].year - CARDS_BY_ID[b].year);
     const players = {};
     for (const uid of room.baseOrder) players[`players.${uid}.answers`] = {};
 
     tx.update(roomRef(), {
-      status: "study", studyCards,
-      studyEndsAt: ts(Date.now() + STUDY_MS),
+      status: "study", studyCards, studyIndex: 0,
+      studyCardEndsAt: ts(Date.now() + STUDY_CARD_MS),
       ...players
     });
   });
 }
 
-async function advanceToQuiz() {
+/** 학습 카드를 한 장씩 넘기다가, 마지막 장 다음엔 바로 퀴즈로 전환한다. */
+async function advanceStudy() {
   await db.runTransaction(async tx => {
     const snap = await tx.get(roomRef());
     const room = snap.data();
     if (room.status !== "study") return;
-    const quiz = buildQuiz(room.studyCards);
-    tx.update(roomRef(), {
-      status: "quiz", quiz, quizIndex: 0,
-      questionEndsAt: ts(Date.now() + quiz[0].timeMs)
-    });
+    const next = room.studyIndex + 1;
+    if (next >= room.studyCards.length) {
+      const quiz = buildQuiz(room.studyCards);
+      tx.update(roomRef(), { status: "quiz", quiz, quizIndex: 0, questionEndsAt: ts(Date.now() + quiz[0].timeMs) });
+    } else {
+      tx.update(roomRef(), { studyIndex: next, studyCardEndsAt: ts(Date.now() + STUDY_CARD_MS) });
+    }
   });
 }
 
@@ -184,23 +187,24 @@ function renderLobby(room) {
 
 function renderStudy(room) {
   hide("lobby"); show("study"); hide("quiz"); hide("finished");
-  document.getElementById("studyGrid").innerHTML = room.studyCards.map(id => {
-    const c = CARDS_BY_ID[id];
-    return `<div class="scard"><img src="${c.image}" alt="">
-      <div class="b"><span class="yr">${c.year}</span><div class="ti">${esc(c.title)}</div><div class="de">${esc(c.hook || c.desc || "")}</div></div>
-    </div>`;
-  }).join("");
+  document.getElementById("studyNo").textContent = room.studyIndex + 1;
+
+  const id = room.studyCards[room.studyIndex];
+  const c = CARDS_BY_ID[id];
+  document.getElementById("studyGrid").innerHTML = `<div class="scard big"><img src="${c.image}" alt="">
+    <div class="b"><span class="yr">${c.year}</span><div class="ti">${esc(c.title)}</div><div class="de">${esc(c.hook || c.desc || "")}</div></div>
+  </div>`;
 
   const tick = () => {
     if (document.getElementById("study").hidden) return;
-    const remain = room.studyEndsAt.toMillis() - Date.now();
-    const pct = Math.max(0, Math.min(100, remain / STUDY_MS * 100));
+    const remain = room.studyCardEndsAt.toMillis() - Date.now();
+    const pct = Math.max(0, Math.min(100, remain / STUDY_CARD_MS * 100));
     const bar = document.getElementById("studyBar");
     bar.querySelector("i").style.width = pct + "%";
-    bar.classList.toggle("warn", remain < 15000);
+    bar.classList.toggle("warn", remain < 1500);
     document.getElementById("studySec").textContent = Math.max(0, Math.ceil(remain / 1000));
     if (remain <= 0) {
-      if (ME.uid === room.hostUid && !advancing) { advancing = true; advanceToQuiz().catch(() => {}).finally(() => { advancing = false; }); }
+      if (ME.uid === room.hostUid && !advancing) { advancing = true; advanceStudy().catch(() => {}).finally(() => { advancing = false; }); }
     } else {
       requestAnimationFrame(tick);
     }
