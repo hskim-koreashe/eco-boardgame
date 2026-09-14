@@ -1,11 +1,12 @@
-/* 방 하나(room.html)의 전체 로직: 대기실 → 학습(연도순 1장씩 5초) → 정답 맞히기(8문항×10초) → 순서로 줄 세우기(35초) → 결과 */
+/* 방 하나(room.html)의 전체 로직: 대기실 → 학습(연도순 1장씩 5초) → 정답 맞히기(8문항×15초) → 순서로 줄 세우기(35초) → 결과 */
 
 const params = new URLSearchParams(location.search);
 const CODE = (params.get("code") || "").toUpperCase();
 const STUDY_CARD_MS = 5000;
-const MC_MS = 10000;
+const MC_MS = 15000;
 const ORDER_MS = 35000;
-const EARLY_ADVANCE_MS = 3000;
+const MC_EARLY_ADVANCE_MS = 3000; // 4지선다: 전원 답하면 짧게(3초) 바로 다음 문제로
+const ORDER_EARLY_ADVANCE_MS = 20000; // 순서 배열: 8칸짜리 채점 결과를 찬찬히 볼 시간을 더 준다
 const N_CARDS = 8;
 
 let CARDS = [];
@@ -274,11 +275,12 @@ function renderQuiz(room) {
   if (ME.uid === room.hostUid && answeredCount === room.baseOrder.length && earlyScheduledFor !== room.quizIndex) {
     earlyScheduledFor = room.quizIndex;
     const atIndex = room.quizIndex;
+    const grace = q.type === "order" ? ORDER_EARLY_ADVANCE_MS : MC_EARLY_ADVANCE_MS;
     setTimeout(async () => {
       const snap = await roomRef().get();
       const r = snap.data();
       if (r.status === "quiz" && r.quizIndex === atIndex) advanceQuiz().catch(() => {});
-    }, EARLY_ADVANCE_MS);
+    }, grace);
   }
 
   const tick = () => {
